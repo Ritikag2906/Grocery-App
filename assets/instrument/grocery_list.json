@@ -2,81 +2,97 @@
     {
         "name": "Flour",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fflour.jpg?alt=media&token=d2bd2884-aef2-4635-adca-299e2f0cd74d",
-        "price": "40"
+        "price": "40",
+        "quantity": "3"
     },
     {
         "name": "Honey",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fhoney.jpg?alt=media&token=78909779-ec7b-489a-9bc6-836fc440ed23",
-        "price": "120"
+        "price": "120",
+        "quantity": "1"
     },
     {
         "name": "Cheese",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fcheese.png?alt=media&token=cf69200c-6fe0-4168-b926-de10022468ee",
-        "price": "250"
+        "price": "250",
+        "quantity": "1"
     },
     {
         "name": "Milk",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fmilk.jpg?alt=media&token=d599dd45-33f6-44ec-a267-6c61c70da81e",
-        "price": "50"
+        "price": "50",
+        "quantity": "2"
     },
     {
         "name": "Flour",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fflour.jpg?alt=media&token=d2bd2884-aef2-4635-adca-299e2f0cd74d",
-        "price": "40"
+        "price": "40",
+        "quantity": "3"
     },
     {
         "name": "Honey",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fhoney.jpg?alt=media&token=78909779-ec7b-489a-9bc6-836fc440ed23",
-        "price": "120"
+        "price": "120",
+        "quantity": "1"
     },
     {
         "name": "Cheese",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fcheese.png?alt=media&token=cf69200c-6fe0-4168-b926-de10022468ee",
-        "price": "250"
+        "price": "250",
+        "quantity": "1"
     },
     {
         "name": "Milk",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fmilk.jpg?alt=media&token=d599dd45-33f6-44ec-a267-6c61c70da81e",
-        "price": "50"
+        "price": "50",
+        "quantity": "2"
     },
     {
         "name": "Flour",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fflour.jpg?alt=media&token=d2bd2884-aef2-4635-adca-299e2f0cd74d",
-        "price": "40"
+        "price": "40",
+        "quantity": "3"
     },
     {
         "name": "Honey",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fhoney.jpg?alt=media&token=78909779-ec7b-489a-9bc6-836fc440ed23",
-        "price": "120"
+        "price": "120",
+        "quantity": "1"
     },
     {
         "name": "Cheese",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fcheese.png?alt=media&token=cf69200c-6fe0-4168-b926-de10022468ee",
-        "price": "250"
+        "price": "250",
+        "quantity": "1"
     },
     {
         "name": "Milk",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fmilk.jpg?alt=media&token=d599dd45-33f6-44ec-a267-6c61c70da81e",
-        "price": "50"
+        "price": "50",
+        "quantity": "2"
     },
     {
         "name": "Flour",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fflour.jpg?alt=media&token=d2bd2884-aef2-4635-adca-299e2f0cd74d",
-        "price": "40"
+        "price": "40",
+        "quantity": "3"
     },
     {
         "name": "Honey",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fhoney.jpg?alt=media&token=78909779-ec7b-489a-9bc6-836fc440ed23",
-        "price": "120"
+        "price": "120",
+        "quantity": "1"
     },
     {
         "name": "Cheese",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fcheese.png?alt=media&token=cf69200c-6fe0-4168-b926-de10022468ee",
-        "price": "250"
+        "price": "250",
+        "quantity": "1"
     },
     {
         "name": "Milk",
         "image": "https://firebasestorage.googleapis.com/v0/b/intern-6a9d7.appspot.com/o/item%2Fmilk.jpg?alt=media&token=d599dd45-33f6-44ec-a267-6c61c70da81e",
-        "price": "50"
+        "price": "50",
+        "quantity": "2"
     }
 ]

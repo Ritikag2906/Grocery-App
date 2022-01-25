@@ -1,9 +1,7 @@
-import 'dart:ui';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:grocery_app/customWidgets/ClipRRectCustom.dart';
+import 'package:grocery_app/pages/EditPage.dart';
 import 'package:grocery_app/utils/widgetConstants.dart';
-import 'package:shimmer/shimmer.dart';
 
 class CustomDialogueBox extends StatefulWidget {
   final String image, price, quantity;
@@ -21,58 +19,50 @@ class CustomDialogueBox extends StatefulWidget {
 class CustomDialogueBoxState extends State<CustomDialogueBox> {
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Container(
-              height: 200,
-              color: Colors.white,
-              child: CachedNetworkImage(
-                fit: BoxFit.fill,
-                imageUrl: widget.image,
-                placeholder: (context, url) => SizedBox(
-                  height: 200,
-                  child: Shimmer.fromColors(
-                    baseColor: GlobalColors.primaryColor.withOpacity(0.1),
-                    highlightColor: Colors.white,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        const Icon(Icons.image, size: 40),
-                        ClipRRect(
-                          // Clip it cleanly.
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-                            child: Container(
-                              color: Colors.grey[100],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                errorWidget: (context, url, error) => Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    const Icon(Icons.hide_image, size: 40),
-                    ClipRRect(
-                      // Clip it cleanly.
-                      child: Container(
-                        color: Colors.grey[100],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )),
+        ClipRRectCustom(image: widget.image, height: 200),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text("Price : " + widget.price),
-            Text("Qty : " + widget.quantity)
+            Text(
+              "Price : " + widget.price,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "Qty : " + widget.quantity,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            )
           ],
-        )
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        TextButton(
+            onPressed: () {
+              Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const EditPage()))
+                  .then((value) => Navigator.pop(context));
+            },
+            child: const Text(
+              'Edit',
+              style: TextStyle(color: Colors.white),
+            ),
+            style: TextButton.styleFrom(
+                backgroundColor: GlobalColors.primaryColor,
+                minimumSize: Size(width * 0.5, 30))),
+        TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.white),
+            ),
+            style: TextButton.styleFrom(
+                backgroundColor: Colors.red,
+                minimumSize: Size(width * 0.5, 30))),
       ],
     );
   }
