@@ -19,6 +19,8 @@ class _HomeCardState extends State<HomeCard> {
   dynamic _pickedImage = '';
   dynamic _img;
 
+  Map<String, dynamic> _enteredData = {};
+
   var _itemName = '';
   var _itemPrice = '';
   var _currVal = 1;
@@ -46,13 +48,15 @@ class _HomeCardState extends State<HomeCard> {
     }
     formKey.currentState!.save();
 
-    GroceryList().addItem(Item(
-      id: DateTime.now().toString(),
-      name: _itemName,
-      price: double.parse(_itemPrice),
-      quantity: _currVal,
-      imagePath: _img,
-    ));
+    _enteredData = {
+      'id': DateTime.now().toIso8601String(),
+      'name': _itemName,
+      'price': double.parse(_itemPrice),
+      'quantity': _currVal,
+      'imagePath': _img,
+    };
+
+    print({..._enteredData.values});
   }
 
   final formKey = GlobalKey<FormState>();
