@@ -56,20 +56,28 @@ class _ShopPageState extends State<ShopPage> {
             ),
           ),
           onRefresh: () => _loadJson(),
-          child: GridView.count(
-            childAspectRatio: 0.89,
-            crossAxisCount: 2,
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-            children: List.generate(
-              groceryList.length,
-              (i) {
-                return GroceryCards(
-                  title: groceryList[i].name.toString(),
-                  price: groceryList[i].price.toString(),
-                  image: groceryList[i].image.toString(),
-                );
-              },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            color: GlobalColors.secondaryColor.withOpacity(0.01),
+            child: GridView.count(
+              childAspectRatio: 1,
+              crossAxisCount: 2,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              children: List.generate(
+                groceryList.length,
+                (i) {
+                  return Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                    child: GroceryCards(
+                      title: groceryList[i].name.toString(),
+                      price: groceryList[i].price.toString(),
+                      image: groceryList[i].image.toString(),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ));

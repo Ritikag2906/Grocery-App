@@ -18,70 +18,82 @@ class GroceryCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   
-    return Stack(children: [
-      ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: SizedBox(
-            height: 200,
-            child: CachedNetworkImage(
-              fit: BoxFit.fill,
-              imageUrl: image,
-              placeholder: (context, url) => SizedBox(
-                height: 200,
-                child: Shimmer.fromColors(
-                  baseColor: Colors.grey,
-                  highlightColor: Colors.white,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      const Icon(Icons.image, size: 40),
-                      ClipRRect(
-                        // Clip it cleanly.
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-                          child: Container(
-                            color: Colors.grey[100],
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: const [
+          BoxShadow(
+            offset: Offset(-0.6, -0.6),
+            blurRadius: 3,
+            color: Colors.grey,
+          ),
+        ],
+        color: Colors.white,
+      ),
+      child: Stack(children: [
+        ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: SizedBox(
+              height: 180,
+              child: CachedNetworkImage(
+                fit: BoxFit.fill,
+                imageUrl: image,
+                placeholder: (context, url) => SizedBox(
+                  height: 180,
+                  child: Shimmer.fromColors(
+                    baseColor: GlobalColors.primaryColor.withOpacity(0.1),
+                    highlightColor: Colors.white,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        const Icon(Icons.image, size: 40),
+                        ClipRRect(
+                          // Clip it cleanly.
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                            child: Container(
+                              color: Colors.grey[100],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              errorWidget: (context, url, error) => Stack(
-                fit: StackFit.expand,
-                children: [
-                  const Icon(Icons.hide_image, size: 40),
-                  ClipRRect(
-                    // Clip it cleanly.
-                    child: Container(
-                      color: Colors.grey[100],
+                      ],
                     ),
                   ),
-                ],
+                ),
+                errorWidget: (context, url, error) => Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    const Icon(Icons.hide_image, size: 40),
+                    ClipRRect(
+                      // Clip it cleanly.
+                      child: Container(
+                        color: Colors.grey[100],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          )),
-      Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10)),
-            child: Container(
-              color: GlobalColors.secondaryColor.withOpacity(0.4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(title),
-                  Text(price),
-                ],
+            )),
+        Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10)),
+              child: Container(
+                color: GlobalColors.secondaryColor.withOpacity(0.4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(title),
+                    Text(price),
+                  ],
+                ),
               ),
-            ),
-          )),
-    ]);
+            )),
+      ]),
+    );
   }
 }
