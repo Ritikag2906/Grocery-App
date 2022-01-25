@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_app/utils/widgetConstants.dart';
+
+import '../customWidgets/card.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  static const String routeName = '/AddProduct';
+
+  const HomePage();
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -13,9 +16,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Home"),
-        backgroundColor: GlobalColors.primaryColor,
+        title: const Text('AddProduct'),
       ),
+      body: HomeCard(),
     );
   }
 }

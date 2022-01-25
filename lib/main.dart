@@ -1,5 +1,6 @@
 import 'package:custom_line_indicator_bottom_navbar/custom_line_indicator_bottom_navbar.dart';
 import 'package:flutter/material.dart';
+import 'package:grocery_app/customWidgets/card.dart';
 import 'package:grocery_app/pages/HomePage.dart';
 import 'package:grocery_app/pages/ShopPage.dart';
 import 'package:grocery_app/utils/widgetConstants.dart';
