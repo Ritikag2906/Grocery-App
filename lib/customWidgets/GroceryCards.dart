@@ -15,6 +15,7 @@ class GroceryCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -38,12 +39,21 @@ class GroceryCards extends StatelessWidget {
                   bottomLeft: Radius.circular(10),
                   bottomRight: Radius.circular(10)),
               child: Container(
-                color: GlobalColors.secondaryColor.withOpacity(0.4),
+                color: Colors.black87.withOpacity(0.8),
+                height: height * 0.04,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Text(title),
-                    Text(price),
+                    Text(
+                      title,
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "\$ $price",
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
                   ],
                 ),
               ),

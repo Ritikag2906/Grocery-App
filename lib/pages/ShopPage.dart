@@ -246,7 +246,6 @@ class _ShopPageState extends State<ShopPage> {
                     color: Colors.red,
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  //color: blue,
                   child: const Center(
                       child: Text(
                     "Remove",
