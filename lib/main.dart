@@ -4,7 +4,6 @@ import 'package:grocery_app/pages/HomePage.dart';
 import 'package:grocery_app/pages/ShopPage.dart';
 import 'package:grocery_app/utils/widgetConstants.dart';
 
-//thi is iid
 
 void main() {
   runApp(const MyApp());
