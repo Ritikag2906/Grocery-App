@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('AddProduct'),
       ),
-      body: HomeCard(),
+      body: const HomeCard(),
     );
   }
 }
