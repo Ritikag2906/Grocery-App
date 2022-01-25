@@ -40,25 +40,24 @@ class _ShopPageState extends State<ShopPage> {
           title: const Text("Shop"),
           backgroundColor: GlobalColors.primaryColor,
         ),
-        body: SmartRefresher(
-          controller: _refreshController,
-          enablePullDown: true,
-          enablePullUp: false,
-          header: const ClassicHeader(
-            completeIcon: Icon(Icons.done, color: GlobalColors.primaryColor),
-            refreshingIcon: SizedBox(
-              width: 25,
-              height: 25,
-              child: CircularProgressIndicator(
-                strokeWidth: 2.0,
-                color: GlobalColors.primaryColor,
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SmartRefresher(
+            controller: _refreshController,
+            enablePullDown: true,
+            enablePullUp: false,
+            header: const ClassicHeader(
+              completeIcon: Icon(Icons.done, color: GlobalColors.primaryColor),
+              refreshingIcon: SizedBox(
+                width: 25,
+                height: 25,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                  color: GlobalColors.primaryColor,
+                ),
               ),
             ),
-          ),
-          onRefresh: () => _loadJson(),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            color: GlobalColors.secondaryColor.withOpacity(0.01),
+            onRefresh: () => _loadJson(),
             child: GridView.count(
               childAspectRatio: 1,
               crossAxisCount: 2,
@@ -74,6 +73,7 @@ class _ShopPageState extends State<ShopPage> {
                       title: groceryList[i].name.toString(),
                       price: groceryList[i].price.toString(),
                       image: groceryList[i].image.toString(),
+                      quantity: groceryList[i].quantity.toString(),
                     ),
                   );
                 },
