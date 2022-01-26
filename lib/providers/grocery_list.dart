@@ -1,8 +1,9 @@
 // ignore_for_file: unused_field
 
 import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/all.dart';
+import 'package:grocery_app/services/db_service.dart';
 
 import '../Models/grocery_item.dart';
 
@@ -23,3 +24,6 @@ class GroceryList with ChangeNotifier {
     notifyListeners();
   }
 }
+
+final groceryListProvider =
+    StreamProvider<List<Item>>((ref) => DatabaseService().getGroceryItems());
