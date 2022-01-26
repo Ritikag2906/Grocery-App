@@ -11,6 +11,7 @@ class GroceryModel {
   String? name;
   String? image;
   String? price;
+  String? quantity;
 
   GroceryModel({this.name, this.image, this.price});
 
@@ -18,6 +19,7 @@ class GroceryModel {
     name = json['name'];
     image = json['image'];
     price = json['price'];
+    quantity = json['quantity'];
   }
 
   Map<String, dynamic> toJson() {
@@ -25,6 +27,7 @@ class GroceryModel {
     data['name'] = this.name;
     data['image'] = this.image;
     data['price'] = this.price;
+    data['quantity'] = this.quantity;
     return data;
   }
 }

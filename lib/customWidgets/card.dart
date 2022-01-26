@@ -1,12 +1,8 @@
-// ignore: file_names
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:grocery_app/utils/widgetConstants.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../customWidgets/counter.dart';
-import '../Models/grocery_item.dart';
-import '../providers/grocery_list.dart';
 
 class HomeCard extends StatefulWidget {
   const HomeCard({Key? key}) : super(key: key);
@@ -139,6 +135,7 @@ class _HomeCardState extends State<HomeCard> {
                         keyboardType: TextInputType.number,
                       ),
                       Counter(
+                        color: GlobalColors.primaryColor,
                         initialValue: _currVal,
                         minValue: 1,
                         maxValue: 100,

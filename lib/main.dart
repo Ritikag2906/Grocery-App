@@ -4,7 +4,6 @@ import 'package:grocery_app/pages/HomePage.dart';
 import 'package:grocery_app/pages/ShopPage.dart';
 import 'package:grocery_app/utils/widgetConstants.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -18,8 +17,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Schaffen Grocery',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: GlobalColors().primarySwatchCustom,
+          primaryColor: GlobalColors.primaryColor,
+          ),
       home: const MyHomePage(),
     );
   }

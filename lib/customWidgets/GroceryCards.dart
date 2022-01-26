@@ -1,23 +1,21 @@
-import 'dart:ui';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:grocery_app/customWidgets/ClipRRectCustom.dart';
 import 'package:grocery_app/utils/widgetConstants.dart';
-import 'package:marquee_text/marquee_text.dart';
-import 'package:shimmer/shimmer.dart';
 
 class GroceryCards extends StatelessWidget {
-  final String title, price, image;
+  final String title, price, image, quantity;
 
   const GroceryCards({
     Key? key,
     required this.title,
     required this.price,
     required this.image,
+    required this.quantity,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -31,49 +29,7 @@ class GroceryCards extends StatelessWidget {
         color: Colors.white,
       ),
       child: Stack(children: [
-        ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: SizedBox(
-              height: 180,
-              child: CachedNetworkImage(
-                fit: BoxFit.fill,
-                imageUrl: image,
-                placeholder: (context, url) => SizedBox(
-                  height: 180,
-                  child: Shimmer.fromColors(
-                    baseColor: GlobalColors.primaryColor.withOpacity(0.1),
-                    highlightColor: Colors.white,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        const Icon(Icons.image, size: 40),
-                        ClipRRect(
-                          // Clip it cleanly.
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-                            child: Container(
-                              color: Colors.grey[100],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                errorWidget: (context, url, error) => Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    const Icon(Icons.hide_image, size: 40),
-                    ClipRRect(
-                      // Clip it cleanly.
-                      child: Container(
-                        color: Colors.grey[100],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )),
+        ClipRRectCustom(image: image, height: 180),
         Positioned(
             bottom: 0,
             left: 0,
@@ -83,12 +39,21 @@ class GroceryCards extends StatelessWidget {
                   bottomLeft: Radius.circular(10),
                   bottomRight: Radius.circular(10)),
               child: Container(
-                color: GlobalColors.secondaryColor.withOpacity(0.4),
+                color: Colors.black87.withOpacity(0.8),
+                height: height * 0.04,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Text(title),
-                    Text(price),
+                    Text(
+                      title,
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "\$ $price",
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
                   ],
                 ),
               ),

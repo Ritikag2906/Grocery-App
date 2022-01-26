@@ -5,7 +5,7 @@ import '../customWidgets/card.dart';
 class HomePage extends StatefulWidget {
   static const String routeName = '/AddProduct';
 
-  const HomePage();
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('AddProduct'),
       ),
-      body: HomeCard(),
+      body: const HomeCard(),
     );
   }
 }
