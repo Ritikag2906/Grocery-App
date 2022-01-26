@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Item {
-  final String id;
+  final DateTime id;
   final String name;
   final String imagePath;
   final double price;
@@ -15,27 +17,6 @@ class Item {
     required this.quantity,
   });
 
-  @override
-  String toString() {
-    return 'Item(id: $id, name: $name, imagePath: $imagePath, price: $price, quantity: $quantity)';
-  }
-
-  Item copyWith({
-    String? id,
-    String? name,
-    String? imagePath,
-    double? price,
-    int? quantity,
-  }) {
-    return Item(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      imagePath: imagePath ?? this.imagePath,
-      price: price ?? this.price,
-      quantity: quantity ?? this.quantity,
-    );
-  }
-
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -48,7 +29,7 @@ class Item {
 
   factory Item.fromMap(Map<String, dynamic> map) {
     return Item(
-      id: map['id'] ?? '',
+      id: (map['lastUpdated'] as Timestamp).toDate(),
       name: map['name'] ?? '',
       imagePath: map['imagePath'] ?? '',
       price: map['price']?.toDouble() ?? 0.0,
@@ -59,6 +40,11 @@ class Item {
   String toJson() => json.encode(toMap());
 
   factory Item.fromJson(String source) => Item.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'Item(id: $id, name: $name, imagePath: $imagePath, price: $price, quantity: $quantity)';
+  }
 
   @override
   bool operator ==(Object other) {
