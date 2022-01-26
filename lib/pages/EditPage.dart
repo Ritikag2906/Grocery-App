@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_app/customWidgets/home_card.dart';
 import 'package:grocery_app/utils/widgetConstants.dart';
 
 class EditPage extends StatefulWidget {
@@ -13,9 +14,10 @@ class _EditPageState extends State<EditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit'),
+        title: const Text('Edit a product'),
         backgroundColor: GlobalColors.primaryColor,
       ),
+      body: HomeCard(),
     );
   }
 }

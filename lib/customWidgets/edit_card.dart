@@ -1,21 +1,30 @@
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:grocery_app/utils/widgetConstants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
+import '../utils/widgetConstants.dart';
 import '../customWidgets/counter.dart';
 
-class HomeCard extends StatefulWidget {
-  const HomeCard({Key? key}) : super(key: key);
+class EditCard extends StatefulWidget {
+  const EditCard({Key? key}) : super(key: key);
 
   @override
-  _HomeCardState createState() => _HomeCardState();
+  _EditCardState createState() => _EditCardState();
 }
 
-class _HomeCardState extends State<HomeCard> {
+class _EditCardState extends State<EditCard> {
   dynamic _pickedImage = '';
   dynamic _img;
+
+  @override
+  initState() {
+    super.initState();
+    Firebase.initializeApp();
+  }
 
   Map<String, dynamic> _enteredData = {};
 
@@ -97,15 +106,37 @@ class _HomeCardState extends State<HomeCard> {
     }
     formKey.currentState!.save();
 
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child('grocery_items')
+        .child(_itemName + '.jpg');
+
+    await ref.putFile(File(_img));
+
+    final _imageUrl = ref.getDownloadURL();
+
     _enteredData = {
       'id': DateTime.now().toIso8601String(),
       'name': _itemName,
       'price': double.parse(_itemPrice) * _currVal,
       'quantity': _currVal,
-      'imagePath': _img,
+      'imagePath': _imageUrl,
     };
 
-    print({..._enteredData.values});
+    formKey.currentState!.reset();
+    FirebaseFirestore.instance.collection('grocery').add(_enteredData);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Item added successfully !',
+        ),
+      ),
+    );
+
+    setState(() {
+      _img = null;
+    });
   }
 
   final formKey = GlobalKey<FormState>();
@@ -138,7 +169,7 @@ class _HomeCardState extends State<HomeCard> {
                         child: CircleAvatar(
                           radius: 40,
                           backgroundImage: _img == null
-                              ? null//FileImage(File('Grocery-App/assets/icons/groc_vector.png'))
+                              ? null //FileImage(File('Grocery-App/assets/icons/groc_vector.png'))
                               : FileImage(
                                   File(_img),
                                 ),
@@ -158,6 +189,7 @@ class _HomeCardState extends State<HomeCard> {
                         ),
                       ),
                       TextFormField(
+                        initialValue: '',
                         decoration: const InputDecoration(
                           label: Text('Item Name'),
                         ),
@@ -172,6 +204,7 @@ class _HomeCardState extends State<HomeCard> {
                         },
                       ),
                       TextFormField(
+                        initialValue: '',
                         maxLength: 5,
                         decoration: const InputDecoration(
                           label: Text('Price'),

@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grocery_app/Models/grocery_item.dart';
 
-class DatabaseService{
+class DatabaseService {
   Stream<List<Item>> getGroceryItems() {
-    final CollectionReference ref = FirebaseFirestore.instance.collection('grocery');
-        
+    final CollectionReference ref =
+        FirebaseFirestore.instance.collection('grocery');
 
     return ref
         .orderBy(
