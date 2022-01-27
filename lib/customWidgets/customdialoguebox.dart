@@ -42,7 +42,7 @@ class CustomDialogueBoxState extends State<CustomDialogueBox> {
         TextButton(
             onPressed: () {
               Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const EditPage()))
+                      MaterialPageRoute(builder: (context) => EditPage()))
                   .then((value) => Navigator.pop(context));
             },
             child: const Text(

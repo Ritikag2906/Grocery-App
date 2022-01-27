@@ -1,9 +1,12 @@
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:grocery_app/utils/widgetConstants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
+import '../utils/widgetConstants.dart';
 import '../customWidgets/counter.dart';
 
 class HomeCard extends StatefulWidget {
@@ -17,12 +20,22 @@ class _HomeCardState extends State<HomeCard> {
   dynamic _pickedImage = '';
   dynamic _img;
 
+  final _text1 = TextEditingController();
+  final _text2 = TextEditingController();
+
+  @override
+  initState() {
+    Firebase.initializeApp();
+    super.initState();
+  }
+
   Map<String, dynamic> _enteredData = {};
 
   var _itemName = '';
   var _itemPrice = '';
   var _currVal = 1;
   dynamic _imageSource;
+  var _loading = false;
 
   Future<void> _pickImage() async {
     await showModalBottomSheet(
@@ -72,7 +85,10 @@ class _HomeCardState extends State<HomeCard> {
     );
 
     try {
-      _pickedImage = await ImagePicker().pickImage(source: _imageSource);
+      _pickedImage = await ImagePicker().pickImage(
+        source: _imageSource,
+        imageQuality: 70,
+      );
       setState(() {
         _img = _pickedImage!.path;
       });
@@ -82,9 +98,12 @@ class _HomeCardState extends State<HomeCard> {
   }
 
   Future<void> _addProduct() async {
+    await Firebase.initializeApp();
+
     if (!formKey.currentState!.validate()) {
       return;
     }
+
     if (_img == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -97,15 +116,47 @@ class _HomeCardState extends State<HomeCard> {
     }
     formKey.currentState!.save();
 
+    setState(() {
+      _loading = true;
+    });
+
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child('grocery_items')
+        .child(_itemName + '.jpg');
+
+    await ref.putFile(File(_img));
+
+    final _imageUrl = await ref.getDownloadURL();
+
     _enteredData = {
       'id': DateTime.now().toIso8601String(),
       'name': _itemName,
       'price': double.parse(_itemPrice) * _currVal,
       'quantity': _currVal,
-      'imagePath': _img,
+      'imagePath': _imageUrl,
     };
 
-    print({..._enteredData.values});
+    DocumentReference<Map<String, dynamic>> temp = await FirebaseFirestore
+        .instance
+        .collection('grocery')
+        .add(_enteredData);
+
+    formKey.currentState!.reset();
+    FocusScope.of(context).unfocus();
+
+    setState(() {
+      _loading = false;
+      _img = null;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Item added successfully !',
+        ),
+      ),
+    );
   }
 
   final formKey = GlobalKey<FormState>();
@@ -115,7 +166,7 @@ class _HomeCardState extends State<HomeCard> {
     final dimensions = MediaQuery.of(context);
     return Center(
       child: Container(
-        height: dimensions.size.height * 0.5,
+        height: dimensions.size.height * 0.58,
         width: dimensions.size.width * 85,
         margin: const EdgeInsets.symmetric(
           horizontal: 5,
@@ -135,14 +186,25 @@ class _HomeCardState extends State<HomeCard> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: CircleAvatar(
-                          radius: 40,
-                          backgroundImage: _img == null
-                              ? null//FileImage(File('Grocery-App/assets/icons/groc_vector.png'))
-                              : FileImage(
-                                  File(_img),
-                                ),
-                          backgroundColor: Colors.grey,
+                        child: SizedBox(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: _img != null
+                                ? Image.file(
+                                    File(_img),
+                                    width: dimensions.size.width * 0.3,
+                                    height: dimensions.size.height * 0.15,
+                                    fit: BoxFit.cover,
+                                    colorBlendMode: BlendMode.clear,
+                                  )
+                                : Image.network(
+                                    'https://cdn.dribbble.com/users/67525/screenshots/4517042/media/c6f7c8b0db834cdc49ef538acdb65702.png?compress=1&resize=400x300',
+                                    height: dimensions.size.height * 0.15,
+                                    width: dimensions.size.width * 0.3,
+                                    fit: BoxFit.cover,
+                                    colorBlendMode: BlendMode.clear,
+                                  ),
+                          ),
                         ),
                       ),
                       TextButton.icon(
@@ -158,6 +220,7 @@ class _HomeCardState extends State<HomeCard> {
                         ),
                       ),
                       TextFormField(
+                        initialValue: '',
                         decoration: const InputDecoration(
                           label: Text('Item Name'),
                         ),
@@ -172,6 +235,7 @@ class _HomeCardState extends State<HomeCard> {
                         },
                       ),
                       TextFormField(
+                        initialValue: '',
                         maxLength: 5,
                         decoration: const InputDecoration(
                           label: Text('Price'),
@@ -204,19 +268,21 @@ class _HomeCardState extends State<HomeCard> {
                       const SizedBox(
                         height: 10,
                       ),
-                      ElevatedButton.icon(
-                        onPressed: _addProduct,
-                        icon: const Icon(Icons.add),
-                        label: const Text('Add Item'),
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
+                      _loading
+                          ? const CircularProgressIndicator.adaptive()
+                          : ElevatedButton.icon(
+                              onPressed: _addProduct,
+                              icon: const Icon(Icons.add),
+                              label: const Text('Add Item'),
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),

@@ -17,9 +17,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Schaffen Grocery',
       theme: ThemeData(
-          primarySwatch: GlobalColors().primarySwatchCustom,
-          primaryColor: GlobalColors.primaryColor,
-          ),
+        primarySwatch: GlobalColors().primarySwatchCustom,
+        primaryColor: GlobalColors.primaryColor,
+      ),
       home: const MyHomePage(),
     );
   }
