@@ -49,21 +49,21 @@ class Item {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is Item &&
-      other.id == id &&
-      other.name == name &&
-      other.imagePath == imagePath &&
-      other.price == price &&
-      other.quantity == quantity;
+        other.id == id &&
+        other.name == name &&
+        other.imagePath == imagePath &&
+        other.price == price &&
+        other.quantity == quantity;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      name.hashCode ^
-      imagePath.hashCode ^
-      price.hashCode ^
-      quantity.hashCode;
+        name.hashCode ^
+        imagePath.hashCode ^
+        price.hashCode ^
+        quantity.hashCode;
   }
 }
