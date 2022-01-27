@@ -166,7 +166,7 @@ class _HomeCardState extends State<HomeCard> {
     final dimensions = MediaQuery.of(context);
     return Center(
       child: Container(
-        height: dimensions.size.height * 0.5,
+        height: dimensions.size.height * 0.55,
         width: dimensions.size.width * 85,
         margin: const EdgeInsets.symmetric(
           horizontal: 5,
@@ -186,14 +186,25 @@ class _HomeCardState extends State<HomeCard> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: CircleAvatar(
-                          radius: 40,
-                          backgroundImage: _img == null
-                              ? FileImage(File('assets/groc_vector.jpg'))
-                              : FileImage(
-                                  File(_img),
-                                ),
-                          backgroundColor: Colors.grey,
+                        child: SizedBox(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: _img != null
+                                ? Image.file(
+                                    File(_img),
+                                    width: dimensions.size.width * 0.3,
+                                    height: dimensions.size.height * 0.15,
+                                    fit: BoxFit.cover,
+                                    colorBlendMode: BlendMode.clear,
+                                  )
+                                : Image.network(
+                                    'https://cdn.dribbble.com/users/67525/screenshots/4517042/media/c6f7c8b0db834cdc49ef538acdb65702.png?compress=1&resize=400x300',
+                                    height: dimensions.size.height * 0.15,
+                                    width: dimensions.size.width * 0.3,
+                                    fit: BoxFit.cover,
+                                    colorBlendMode: BlendMode.clear,
+                                  ),
+                          ),
                         ),
                       ),
                       TextButton.icon(
