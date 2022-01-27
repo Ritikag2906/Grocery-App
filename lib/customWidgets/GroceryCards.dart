@@ -28,8 +28,14 @@ class GroceryCards extends StatelessWidget {
         ],
         color: Colors.white,
       ),
+      height: 180,
+      width: 180,
       child: Stack(children: [
-        ClipRRectCustom(image: image, height: 180),
+        ClipRRectCustom(
+          image: image,
+          height: 180,
+          width: 180,
+        ),
         Positioned(
             bottom: 0,
             left: 0,

@@ -29,7 +29,8 @@ class Item {
 
   factory Item.fromMap(Map<String, dynamic> map) {
     return Item(
-      id: (map['lastUpdated'] as Timestamp).toDate(),
+      id: DateTime.parse(map['id']),
+      // (map['id'] as Timestamp).toDate(),
       name: map['name'] ?? '',
       imagePath: map['imagePath'] ?? '',
       price: map['price']?.toDouble() ?? 0.0,

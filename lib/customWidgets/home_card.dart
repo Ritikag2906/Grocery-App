@@ -24,8 +24,7 @@ class _HomeCardState extends State<HomeCard> {
   final _text2 = TextEditingController();
 
   @override
-  initState() {
-    Firebase.initializeApp();
+  void initState() {
     super.initState();
   }
 
@@ -98,8 +97,6 @@ class _HomeCardState extends State<HomeCard> {
   }
 
   Future<void> _addProduct() async {
-    await Firebase.initializeApp();
-
     if (!formKey.currentState!.validate()) {
       return;
     }

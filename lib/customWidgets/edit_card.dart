@@ -21,9 +21,8 @@ class _EditCardState extends State<EditCard> {
   dynamic _img;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
-    Firebase.initializeApp();
   }
 
   Map<String, dynamic> _enteredData = {};
