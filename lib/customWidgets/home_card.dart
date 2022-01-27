@@ -20,10 +20,13 @@ class _HomeCardState extends State<HomeCard> {
   dynamic _pickedImage = '';
   dynamic _img;
 
+  final _text1 = TextEditingController();
+  final _text2 = TextEditingController();
+
   @override
   initState() {
-    super.initState();
     Firebase.initializeApp();
+    super.initState();
   }
 
   Map<String, dynamic> _enteredData = {};
@@ -32,6 +35,7 @@ class _HomeCardState extends State<HomeCard> {
   var _itemPrice = '';
   var _currVal = 1;
   dynamic _imageSource;
+  var _loading = false;
 
   Future<void> _pickImage() async {
     await showModalBottomSheet(
@@ -81,7 +85,10 @@ class _HomeCardState extends State<HomeCard> {
     );
 
     try {
-      _pickedImage = await ImagePicker().pickImage(source: _imageSource);
+      _pickedImage = await ImagePicker().pickImage(
+        source: _imageSource,
+        imageQuality: 70,
+      );
       setState(() {
         _img = _pickedImage!.path;
       });
@@ -91,9 +98,12 @@ class _HomeCardState extends State<HomeCard> {
   }
 
   Future<void> _addProduct() async {
+    await Firebase.initializeApp();
+
     if (!formKey.currentState!.validate()) {
       return;
     }
+
     if (_img == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -106,28 +116,39 @@ class _HomeCardState extends State<HomeCard> {
     }
     formKey.currentState!.save();
 
-    // final ref = FirebaseStorage.instance
-    //     .ref()
-    //     .child('grocery_items')
-    //     .child(_itemName + '.jpg');
+    setState(() {
+      _loading = true;
+    });
 
-   // await ref.putFile(File(_img));
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child('grocery_items')
+        .child(_itemName + '.jpg');
 
-    //final _imageUrl = await ref.getDownloadURL();
+    await ref.putFile(File(_img));
+
+    final _imageUrl = await ref.getDownloadURL();
 
     _enteredData = {
       'id': DateTime.now().toIso8601String(),
       'name': _itemName,
       'price': double.parse(_itemPrice) * _currVal,
       'quantity': _currVal,
-      'imagePath': _img,
+      'imagePath': _imageUrl,
     };
 
-    formKey.currentState!.reset();
     DocumentReference<Map<String, dynamic>> temp = await FirebaseFirestore
         .instance
         .collection('grocery')
         .add(_enteredData);
+
+    formKey.currentState!.reset();
+    FocusScope.of(context).unfocus();
+
+    setState(() {
+      _loading = false;
+      _img = null;
+    });
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -136,10 +157,6 @@ class _HomeCardState extends State<HomeCard> {
         ),
       ),
     );
-
-    setState(() {
-      _img = null;
-    });
   }
 
   final formKey = GlobalKey<FormState>();
@@ -172,7 +189,7 @@ class _HomeCardState extends State<HomeCard> {
                         child: CircleAvatar(
                           radius: 40,
                           backgroundImage: _img == null
-                              ? null //FileImage(File('Grocery-App/assets/icons/groc_vector.png'))
+                              ? FileImage(File('assets/groc_vector.jpg'))
                               : FileImage(
                                   File(_img),
                                 ),
@@ -240,19 +257,21 @@ class _HomeCardState extends State<HomeCard> {
                       const SizedBox(
                         height: 10,
                       ),
-                      ElevatedButton.icon(
-                        onPressed: _addProduct,
-                        icon: const Icon(Icons.add),
-                        label: const Text('Add Item'),
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
+                      _loading
+                          ? const CircularProgressIndicator.adaptive()
+                          : ElevatedButton.icon(
+                              onPressed: _addProduct,
+                              icon: const Icon(Icons.add),
+                              label: const Text('Add Item'),
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
