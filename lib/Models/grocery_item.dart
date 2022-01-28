@@ -29,7 +29,8 @@ class Item {
 
   factory Item.fromMap(Map<String, dynamic> map) {
     return Item(
-      id: (map['lastUpdated'] as Timestamp).toDate(),
+      id: DateTime.parse(map['id']),
+      // (map['id'] as Timestamp).toDate(),
       name: map['name'] ?? '',
       imagePath: map['imagePath'] ?? '',
       price: map['price']?.toDouble() ?? 0.0,
@@ -49,21 +50,21 @@ class Item {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is Item &&
-      other.id == id &&
-      other.name == name &&
-      other.imagePath == imagePath &&
-      other.price == price &&
-      other.quantity == quantity;
+        other.id == id &&
+        other.name == name &&
+        other.imagePath == imagePath &&
+        other.price == price &&
+        other.quantity == quantity;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      name.hashCode ^
-      imagePath.hashCode ^
-      price.hashCode ^
-      quantity.hashCode;
+        name.hashCode ^
+        imagePath.hashCode ^
+        price.hashCode ^
+        quantity.hashCode;
   }
 }

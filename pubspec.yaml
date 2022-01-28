@@ -31,8 +31,8 @@ dependencies:
   cached_network_image: ^3.1.0
   image_picker: ^0.8.4+4
   flutter_svg: ^0.21.0-nullsafety.0
+  cupertino_icons: ^1.0.2
 
-  #riverpod package
   flutter_riverpod: ^0.14.0+3
 
   #firebase flutter packages
@@ -43,10 +43,6 @@ dependencies:
   firebase_storage: ^10.0.1
   # google_sign_in: ^5.0.4
 
-
-
-  cupertino_icons: ^1.0.2
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -54,8 +50,6 @@ dev_dependencies:
   flutter_lints: ^1.0.0
 
 flutter:
-
-
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
@@ -63,6 +57,7 @@ flutter:
     - assets/
     - assets/instrument/
     - assets/icons/
+    - assets/groc_vector.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

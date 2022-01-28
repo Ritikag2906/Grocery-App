@@ -1,31 +1,92 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:grocery_app/utils/widgetConstants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
+import '../utils/widgetConstants.dart';
 import '../customWidgets/counter.dart';
 
-class HomeCard extends StatefulWidget {
-  const HomeCard({Key? key}) : super(key: key);
+class EditCard extends StatefulWidget {
+  const EditCard({Key? key}) : super(key: key);
 
   @override
-  _HomeCardState createState() => _HomeCardState();
+  _EditCardState createState() => _EditCardState();
 }
 
-class _HomeCardState extends State<HomeCard> {
+class _EditCardState extends State<EditCard> {
   dynamic _pickedImage = '';
   dynamic _img;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   Map<String, dynamic> _enteredData = {};
 
   var _itemName = '';
   var _itemPrice = '';
   var _currVal = 1;
+  dynamic _imageSource;
 
   Future<void> _pickImage() async {
-    _pickedImage = await ImagePicker().pickImage(source: ImageSource.camera);
-    setState(() {
-      _img = _pickedImage!.path;
-    });
+    await showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      elevation: 5,
+      context: context,
+      builder: (ctx) {
+        return Container(
+          padding: const EdgeInsets.all(8.0),
+          margin: const EdgeInsets.all(8.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text('Please select a method'),
+                const Divider(
+                  thickness: 0.8,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        _imageSource = ImageSource.camera;
+                        Navigator.of(ctx).pop();
+                      },
+                      icon: const Icon(Icons.camera),
+                      label: const Text('Camera'),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        _imageSource = ImageSource.gallery;
+                        Navigator.of(ctx).pop();
+                      },
+                      icon: const Icon(Icons.image),
+                      label: const Text('Gallery'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    try {
+      _pickedImage = await ImagePicker().pickImage(source: _imageSource);
+      setState(() {
+        _img = _pickedImage!.path;
+      });
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future<void> _addProduct() async {
@@ -44,18 +105,41 @@ class _HomeCardState extends State<HomeCard> {
     }
     formKey.currentState!.save();
 
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child('grocery_items')
+        .child(_itemName + '.jpg');
+
+    await ref.putFile(File(_img));
+
+    final _imageUrl = ref.getDownloadURL();
+
     _enteredData = {
       'id': DateTime.now().toIso8601String(),
       'name': _itemName,
-      'price': double.parse(_itemPrice),
+      'price': double.parse(_itemPrice) * _currVal,
       'quantity': _currVal,
-      'imagePath': _img,
+      'imagePath': _imageUrl,
     };
 
-    print({..._enteredData.values});
+    formKey.currentState!.reset();
+    FirebaseFirestore.instance.collection('grocery').add(_enteredData);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Item added successfully !',
+        ),
+      ),
+    );
+
+    setState(() {
+      _img = null;
+    });
   }
 
   final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final dimensions = MediaQuery.of(context);
@@ -84,7 +168,7 @@ class _HomeCardState extends State<HomeCard> {
                         child: CircleAvatar(
                           radius: 40,
                           backgroundImage: _img == null
-                              ? null
+                              ? null //FileImage(File('Grocery-App/assets/icons/groc_vector.png'))
                               : FileImage(
                                   File(_img),
                                 ),
@@ -104,6 +188,7 @@ class _HomeCardState extends State<HomeCard> {
                         ),
                       ),
                       TextFormField(
+                        initialValue: '',
                         decoration: const InputDecoration(
                           label: Text('Item Name'),
                         ),
@@ -118,6 +203,7 @@ class _HomeCardState extends State<HomeCard> {
                         },
                       ),
                       TextFormField(
+                        initialValue: '',
                         maxLength: 5,
                         decoration: const InputDecoration(
                           label: Text('Price'),

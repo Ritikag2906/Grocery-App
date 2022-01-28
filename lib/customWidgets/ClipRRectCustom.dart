@@ -8,7 +8,13 @@ import 'package:shimmer/shimmer.dart';
 class ClipRRectCustom extends StatelessWidget {
   final String image;
   final double height;
-  const ClipRRectCustom({Key? key, required this.image, required this.height}) : super(key: key);
+  final double width;
+  const ClipRRectCustom(
+      {Key? key,
+      required this.image,
+      required this.height,
+      required this.width})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +22,14 @@ class ClipRRectCustom extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         child: Container(
           height: height,
+          width: width,
           color: Colors.white,
           child: CachedNetworkImage(
-            fit: BoxFit.fill,
+            fit: BoxFit.cover,
             imageUrl: image,
             placeholder: (context, url) => SizedBox(
               height: height,
+              width: width,
               child: Shimmer.fromColors(
                 baseColor: GlobalColors.primaryColor.withOpacity(0.1),
                 highlightColor: Colors.white,

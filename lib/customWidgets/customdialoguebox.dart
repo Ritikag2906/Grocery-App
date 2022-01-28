@@ -22,7 +22,11 @@ class CustomDialogueBoxState extends State<CustomDialogueBox> {
     final width = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        ClipRRectCustom(image: widget.image, height: 200),
+        ClipRRectCustom(
+          image: widget.image,
+          height: 200,
+          width: 200,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -42,7 +46,7 @@ class CustomDialogueBoxState extends State<CustomDialogueBox> {
         TextButton(
             onPressed: () {
               Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const EditPage()))
+                      MaterialPageRoute(builder: (context) => EditPage()))
                   .then((value) => Navigator.pop(context));
             },
             child: const Text(
