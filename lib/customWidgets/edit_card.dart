@@ -1,16 +1,22 @@
 import 'dart:io';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:grocery_app/services/db_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 import '../utils/widgetConstants.dart';
 import '../customWidgets/counter.dart';
 
 class EditCard extends StatefulWidget {
-  const EditCard({Key? key}) : super(key: key);
+  final AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> data;
+
+  EditCard(this.data);
 
   @override
   _EditCardState createState() => _EditCardState();
@@ -20,16 +26,32 @@ class _EditCardState extends State<EditCard> {
   dynamic _pickedImage = '';
   dynamic _img;
 
+  var _itemName = '';
+  var _itemPrice = '';
+  var _currVal = 1;
+  var _userImage = '';
+
+  var documentId = '';
+
+  var _loading = false;
+
   @override
   void initState() {
+    widget.data.data!.docs.forEach((element) {
+      var _temp = element.data();
+      double temp = _temp['price'];
+      _itemName = _temp['name'];
+      _itemPrice = temp.toString();
+      _currVal = _temp['quantity'];
+      _userImage = _temp['imagePath'];
+      documentId = element.id;
+    });
+
     super.initState();
   }
 
   Map<String, dynamic> _enteredData = {};
 
-  var _itemName = '';
-  var _itemPrice = '';
-  var _currVal = 1;
   dynamic _imageSource;
 
   Future<void> _pickImage() async {
@@ -89,30 +111,47 @@ class _EditCardState extends State<EditCard> {
     }
   }
 
+  Future<File> urlToFile(String imageUrl) async {
+    var rng = Random();
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    File file = File('$tempPath' + (rng.nextInt(100)).toString() + '.png');
+    http.Response response = await http.get(Uri.parse(imageUrl));
+    await file.writeAsBytes(response.bodyBytes);
+    return file;
+  }
+
   Future<void> _addProduct() async {
     if (!formKey.currentState!.validate()) {
       return;
     }
-    if (_img == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Please select an image',
-          ),
-        ),
-      );
-      return;
-    }
+    // if (_img =) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content: Text(
+    //         'Please select an image',
+    //       ),
+    //     ),
+    //   );
+    //   return;
+    // }
     formKey.currentState!.save();
-
+    setState(() {
+      _loading = true;
+    });
     final ref = FirebaseStorage.instance
         .ref()
         .child('grocery_items')
         .child(_itemName + '.jpg');
 
-    await ref.putFile(File(_img));
+    if (_img == null) {
+      dynamic file = await urlToFile(_userImage);
+      await ref.putFile(file);
+    } else {
+      await ref.putFile(File(_img));
+    }
 
-    final _imageUrl = ref.getDownloadURL();
+    final _imageUrl = await ref.getDownloadURL();
 
     _enteredData = {
       'id': DateTime.now().toIso8601String(),
@@ -123,17 +162,29 @@ class _EditCardState extends State<EditCard> {
     };
 
     formKey.currentState!.reset();
-    FirebaseFirestore.instance.collection('grocery').add(_enteredData);
-
+    // FirebaseFirestore.instance.collection('grocery').add(_enteredData);
+    // await http.patch(
+    //   Uri.parse(
+    //       'https://firestore.googleapis.com/v1/projects/[groceryapp-3e624]/databases/(default)/documents/[grocery]/[$documentId]?currentDocument.exists=true&updateMask.fieldPaths=name&alt=json'),
+    //   body: json.encode(_enteredData),
+    // );
+    await DatabaseService()
+        .updateCollection(documentId, _enteredData)
+        .catchError((e) {
+      setState(() {
+        _loading = false;
+      });
+    });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
-          'Item added successfully !',
+          'Item updated successfully !',
         ),
       ),
     );
 
     setState(() {
+      _loading = false;
       _img = null;
     });
   }
@@ -145,7 +196,7 @@ class _EditCardState extends State<EditCard> {
     final dimensions = MediaQuery.of(context);
     return Center(
       child: Container(
-        height: dimensions.size.height * 0.5,
+        height: dimensions.size.height * 0.58,
         width: dimensions.size.width * 85,
         margin: const EdgeInsets.symmetric(
           horizontal: 5,
@@ -165,14 +216,30 @@ class _EditCardState extends State<EditCard> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: CircleAvatar(
-                          radius: 40,
-                          backgroundImage: _img == null
-                              ? null //FileImage(File('Grocery-App/assets/icons/groc_vector.png'))
-                              : FileImage(
-                                  File(_img),
-                                ),
-                          backgroundColor: Colors.grey,
+                        child: Card(
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: _img != null
+                                ? Image.file(
+                                    File(_img),
+                                    width: dimensions.size.width * 0.3,
+                                    height: dimensions.size.height * 0.15,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Hero(
+                                    tag: 'item',
+                                    child: Image.network(
+                                      _userImage,
+                                      height: dimensions.size.height * 0.15,
+                                      width: dimensions.size.width * 0.3,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                          ),
                         ),
                       ),
                       TextButton.icon(
@@ -188,7 +255,7 @@ class _EditCardState extends State<EditCard> {
                         ),
                       ),
                       TextFormField(
-                        initialValue: '',
+                        initialValue: _itemName,
                         decoration: const InputDecoration(
                           label: Text('Item Name'),
                         ),
@@ -203,8 +270,7 @@ class _EditCardState extends State<EditCard> {
                         },
                       ),
                       TextFormField(
-                        initialValue: '',
-                        maxLength: 5,
+                        initialValue: _itemPrice,
                         decoration: const InputDecoration(
                           label: Text('Price'),
                         ),
@@ -218,6 +284,9 @@ class _EditCardState extends State<EditCard> {
                           _itemPrice = val ?? '';
                         },
                         keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(
+                        height: 20,
                       ),
                       Counter(
                         color: GlobalColors.primaryColor,
@@ -236,19 +305,21 @@ class _EditCardState extends State<EditCard> {
                       const SizedBox(
                         height: 10,
                       ),
-                      ElevatedButton.icon(
-                        onPressed: _addProduct,
-                        icon: const Icon(Icons.add),
-                        label: const Text('Add Item'),
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
+                      _loading
+                          ? const CircularProgressIndicator.adaptive()
+                          : ElevatedButton.icon(
+                              onPressed: _addProduct,
+                              icon: const Icon(Icons.update),
+                              label: const Text('Update Item'),
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),

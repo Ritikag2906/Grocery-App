@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:grocery_app/Models/grocery_item.dart';
-import 'package:grocery_app/Models/grocery_model.dart';
+import 'package:grocery_app/customWidgets/edit_card.dart';
 import 'package:grocery_app/customWidgets/home_card.dart';
 import 'package:grocery_app/utils/widgetConstants.dart';
 
@@ -21,7 +20,7 @@ class _EditPageState extends State<EditPage> {
         .collection('grocery')
         .where('id', isEqualTo: widget.id.toIso8601String())
         .get();
-      
+
     setState(() {
       // groceryItem = Item.fromJson(data.docs[0].data());
       // print(groceryItem);
@@ -36,10 +35,38 @@ class _EditPageState extends State<EditPage> {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseFirestore.instance
+        .collection('grocery')
+        .where('id', isEqualTo: widget.id.toIso8601String())
+        .get()
+        .then(
+          (value) => print(
+            {
+              value.docs.forEach(
+                (element) {
+                  print(element.id);
+                },
+              )
+            },
+          ),
+        );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit a product'),
         backgroundColor: GlobalColors.primaryColor,
+      ),
+      body: FutureBuilder(
+        future: FirebaseFirestore.instance
+            .collection('grocery')
+            .where('id', isEqualTo: widget.id.toIso8601String())
+            .get(),
+        builder: (_, snapshot) {
+          return snapshot.connectionState == ConnectionState.waiting
+              ? const CircularProgressIndicator()
+              : EditCard(snapshot
+                  as AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>);
+        },
       ),
     );
   }

@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/customWidgets/ClipRRectCustom.dart';
 import 'package:grocery_app/pages/EditPage.dart';
+import 'package:grocery_app/services/db_service.dart';
 import 'package:grocery_app/utils/widgetConstants.dart';
 
 class CustomDialogueBox extends StatefulWidget {
-  final String image, price, quantity;
+  final String image, docId, price, quantity;
   final DateTime id;
   const CustomDialogueBox(
       {Key? key,
       required this.id,
+      required this.docId,
       required this.image,
       required this.price,
       required this.quantity})
@@ -66,7 +68,9 @@ class CustomDialogueBoxState extends State<CustomDialogueBox> {
                 minimumSize: Size(width * 0.5, 30))),
         TextButton(
             onPressed: () {
-              Navigator.pop(context);
+              DatabaseService()
+                  .deleteCollection(widget.docId)
+                  .then((value) => Navigator.pop(context));
             },
             child: const Text(
               'Delete',

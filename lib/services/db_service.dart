@@ -19,7 +19,6 @@ class DatabaseService {
   }
 
   Future<void> addGroceryItem(Item item) async {
-
     // Reference to the path in firestore where the collection reside.
     final CollectionReference ref =
         FirebaseFirestore.instance.collection('grocery');
@@ -28,10 +27,17 @@ class DatabaseService {
       debugPrint('Error Occurred: $error');
     });
   }
+
+  Future<void> updateCollection(
+      String docId, Map<String, dynamic> dataMap) async {
+    final CollectionReference ref =
+        FirebaseFirestore.instance.collection('grocery');
+    await ref.doc(docId).update(dataMap);
+  }
+
   Future<void> deleteCollection(String docId) async {
- final CollectionReference ref =
+    final CollectionReference ref =
         FirebaseFirestore.instance.collection('grocery');
     await ref.doc(docId).delete();
   }
 }
-
