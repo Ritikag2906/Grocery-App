@@ -56,7 +56,7 @@ class GroceryCards extends StatelessWidget {
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      "\$ $price",
+                      "\u{20B9} $price",
                       style: const TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),

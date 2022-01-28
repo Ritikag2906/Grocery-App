@@ -4,6 +4,9 @@ import 'package:grocery_app/customWidgets/home_card.dart';
 import 'package:grocery_app/utils/widgetConstants.dart';
 
 class EditPage extends StatefulWidget {
+  final DateTime id;
+
+  const EditPage({Key? key, required this.id}) : super(key: key);
   @override
   _EditPageState createState() => _EditPageState();
 }
@@ -18,7 +21,9 @@ class _EditPageState extends State<EditPage> {
   Widget build(BuildContext context) {
     FirebaseFirestore.instance
         .collection('grocery')
-        .where('id, {2022-01-27T16:57:35.005363}')
+        .where('id', isEqualTo: widget.id.toIso8601String()
+            //  Timestamp.fromDate(widget.id)
+            )
         .get()
         .then((value) => print({...value.docs.asMap()}));
 
