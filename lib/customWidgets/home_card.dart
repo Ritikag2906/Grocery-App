@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -183,7 +182,8 @@ class _HomeCardState extends State<HomeCard> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: SizedBox(
+                        child: Card(
+                          elevation: 5,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8.0),
                             child: _img != null
@@ -233,7 +233,6 @@ class _HomeCardState extends State<HomeCard> {
                       ),
                       TextFormField(
                         initialValue: '',
-                        maxLength: 5,
                         decoration: const InputDecoration(
                           label: Text('Price'),
                         ),
@@ -247,6 +246,9 @@ class _HomeCardState extends State<HomeCard> {
                           _itemPrice = val ?? '';
                         },
                         keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(
+                        height: 20,
                       ),
                       Counter(
                         color: GlobalColors.primaryColor,

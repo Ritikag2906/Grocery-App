@@ -27,18 +27,21 @@ class CustomDialogueBoxState extends State<CustomDialogueBox> {
           height: 200,
           width: 200,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text(
-              "Price : " + widget.price,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Qty : " + widget.quantity,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            )
-          ],
+        Container(
+          margin: const EdgeInsets.only(top: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                "Price : " + widget.price,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "Qty : " + widget.quantity,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              )
+            ],
+          ),
         ),
         const SizedBox(
           height: 10,

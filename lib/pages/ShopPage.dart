@@ -102,11 +102,15 @@ class _ShopPageState extends State<ShopPage> {
                                     builder: (context) => Theme(
                                           data: ThemeData.dark(),
                                           child: CupertinoAlertDialog(
-                                              title: Text(value[i]
-                                                  .name
-                                                  // groceryList[i]
-                                                  //   .name
-                                                  .toString()),
+                                              title: Container(
+                                                margin: const EdgeInsets.only(
+                                                    bottom: 8.0),
+                                                child: Text(value[i]
+                                                    .name
+                                                    // groceryList[i]
+                                                    //   .name
+                                                    .toString()),
+                                              ),
                                               content: CustomDialogueBox(
                                                 image: value[i]
                                                     .imagePath
