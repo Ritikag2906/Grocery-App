@@ -14,16 +14,17 @@ class EditPage extends StatefulWidget {
 }
 
 class _EditPageState extends State<EditPage> {
-  Item groceryItem = Item();
+  // Item groceryItem = Item();
 
   _loadData() async {
     var data = await FirebaseFirestore.instance
         .collection('grocery')
         .where('id', isEqualTo: widget.id.toIso8601String())
         .get();
+      
     setState(() {
-      groceryItem = Item.fromJson(data.docs[0].data());
-      print(groceryItem);
+      // groceryItem = Item.fromJson(data.docs[0].data());
+      // print(groceryItem);
     });
   }
 
