@@ -14,7 +14,7 @@ class DatabaseService {
         )
         .snapshots()
         .map((event) => event.docs
-            .map((e) => Item.fromMap(e.data()! as Map<String, dynamic>))
+            .map((e) => Item.fromMap(e.data()! as Map<String, dynamic>, e.id))
             .toList());
   }
 
@@ -27,6 +27,16 @@ class DatabaseService {
     await ref.add(item.toMap()).catchError((error) {
       debugPrint('Error Occurred: $error');
     });
+  }
+  Future<void> updateCollection(String docId, Map<String, dynamic> dataMap) async {
+ final CollectionReference ref =
+        FirebaseFirestore.instance.collection('grocery');
+    await ref.doc(docId).update(dataMap);
+  }
+  Future<void> deleteCollection(String docId) async {
+ final CollectionReference ref =
+        FirebaseFirestore.instance.collection('grocery');
+    await ref.doc(docId).delete();
   }
 }
 

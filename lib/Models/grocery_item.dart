@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Item {
+  final String docId;
   final DateTime id;
   final String name;
   final String imagePath;
@@ -10,6 +10,7 @@ class Item {
   final int quantity;
 
   Item({
+    required this.docId,
     required this.id,
     required this.name,
     required this.imagePath,
@@ -19,7 +20,8 @@ class Item {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      'docId': docId,
+      'id': id.millisecondsSinceEpoch,
       'name': name,
       'imagePath': imagePath,
       'price': price,
@@ -27,10 +29,10 @@ class Item {
     };
   }
 
-  factory Item.fromMap(Map<String, dynamic> map) {
+  factory Item.fromMap(Map<String, dynamic> map, String docId1) {
     return Item(
+      docId: docId1,
       id: DateTime.parse(map['id']),
-      // (map['id'] as Timestamp).toDate(),
       name: map['name'] ?? '',
       imagePath: map['imagePath'] ?? '',
       price: map['price']?.toDouble() ?? 0.0,
@@ -38,33 +40,44 @@ class Item {
     );
   }
 
-  String toJson() => json.encode(toMap());
-
-  factory Item.fromJson(String source) => Item.fromMap(json.decode(source));
-
-  @override
-  String toString() {
-    return 'Item(id: $id, name: $name, imagePath: $imagePath, price: $price, quantity: $quantity)';
-  }
-
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-
+  
     return other is Item &&
-        other.id == id &&
-        other.name == name &&
-        other.imagePath == imagePath &&
-        other.price == price &&
-        other.quantity == quantity;
+      other.docId == docId &&
+      other.id == id &&
+      other.name == name &&
+      other.imagePath == imagePath &&
+      other.price == price &&
+      other.quantity == quantity;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^
-        name.hashCode ^
-        imagePath.hashCode ^
-        price.hashCode ^
-        quantity.hashCode;
+    return docId.hashCode ^
+      id.hashCode ^
+      name.hashCode ^
+      imagePath.hashCode ^
+      price.hashCode ^
+      quantity.hashCode;
+  }
+
+  Item copyWith({
+    String? docId,
+    DateTime? id,
+    String? name,
+    String? imagePath,
+    double? price,
+    int? quantity,
+  }) {
+    return Item(
+      docId: docId ?? this.docId,
+      id: id ?? this.id,
+      name: name ?? this.name,
+      imagePath: imagePath ?? this.imagePath,
+      price: price ?? this.price,
+      quantity: quantity ?? this.quantity,
+    );
   }
 }
