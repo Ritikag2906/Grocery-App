@@ -14,7 +14,7 @@ class DatabaseService {
         )
         .snapshots()
         .map((event) => event.docs
-            .map((e) => Item.fromMap(e.data()! as Map<String, dynamic>))
+            .map((e) => Item.fromMap(e.data()! as Map<String, dynamic>, e.id))
             .toList());
   }
 
