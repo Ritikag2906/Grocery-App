@@ -6,7 +6,6 @@ List<GroceryModel> groceryFromJson(String str) => List<GroceryModel>.from(
 String groceryToJson(List<GroceryModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-
 class GroceryModel {
   String? name;
   String? image;
@@ -18,8 +17,8 @@ class GroceryModel {
   GroceryModel.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     image = json['image'];
-    price = json['price'];
-    quantity = json['quantity'];
+    price = json['price'].toString();
+    quantity = json['quantity'].toString();
   }
 
   Map<String, dynamic> toJson() {

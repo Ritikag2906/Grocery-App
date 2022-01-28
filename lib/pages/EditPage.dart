@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:grocery_app/Models/grocery_item.dart';
+import 'package:grocery_app/Models/grocery_model.dart';
 import 'package:grocery_app/customWidgets/home_card.dart';
 import 'package:grocery_app/utils/widgetConstants.dart';
 
@@ -12,21 +14,27 @@ class EditPage extends StatefulWidget {
 }
 
 class _EditPageState extends State<EditPage> {
+  Item groceryItem = Item();
+
+  _loadData() async {
+    var data = await FirebaseFirestore.instance
+        .collection('grocery')
+        .where('id', isEqualTo: widget.id.toIso8601String())
+        .get();
+    setState(() {
+      groceryItem = Item.fromJson(data.docs[0].data());
+      print(groceryItem);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadData();
   }
 
   @override
   Widget build(BuildContext context) {
-    FirebaseFirestore.instance
-        .collection('grocery')
-        .where('id', isEqualTo: widget.id.toIso8601String()
-            //  Timestamp.fromDate(widget.id)
-            )
-        .get()
-        .then((value) => print({...value.docs.asMap()}));
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit a product'),
