@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:grocery_app/services/db_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 import '../utils/widgetConstants.dart';
 import '../customWidgets/counter.dart';
@@ -29,6 +32,8 @@ class _EditCardState extends State<EditCard> {
   var _userImage = '';
 
   var documentId = '';
+
+  var _loading = false;
 
   @override
   void initState() {
@@ -106,6 +111,16 @@ class _EditCardState extends State<EditCard> {
     }
   }
 
+  Future<File> urlToFile(String imageUrl) async {
+    var rng = Random();
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    File file = File('$tempPath' + (rng.nextInt(100)).toString() + '.png');
+    http.Response response = await http.get(Uri.parse(imageUrl));
+    await file.writeAsBytes(response.bodyBytes);
+    return file;
+  }
+
   Future<void> _addProduct() async {
     if (!formKey.currentState!.validate()) {
       return;
@@ -121,20 +136,22 @@ class _EditCardState extends State<EditCard> {
     //   return;
     // }
     formKey.currentState!.save();
-
+    setState(() {
+      _loading = true;
+    });
     final ref = FirebaseStorage.instance
         .ref()
         .child('grocery_items')
         .child(_itemName + '.jpg');
 
-    print(_userImage);
     if (_img == null) {
-      await ref.putFile(File.fromUri(Uri.parse(_userImage)));
+      dynamic file = await urlToFile(_userImage);
+      await ref.putFile(file);
     } else {
       await ref.putFile(File(_img));
     }
 
-    final _imageUrl = ref.getDownloadURL();
+    final _imageUrl = await ref.getDownloadURL();
 
     _enteredData = {
       'id': DateTime.now().toIso8601String(),
@@ -146,11 +163,18 @@ class _EditCardState extends State<EditCard> {
 
     formKey.currentState!.reset();
     // FirebaseFirestore.instance.collection('grocery').add(_enteredData);
-    await http.patch(
-      Uri.parse(
-          'https://firestore.googleapis.com/v1/projects/[groceryapp-3e624]/databases/(default)/documents/[grocery]/[$documentId]?currentDocument.exists=true&updateMask.fieldPaths=name&alt=json'),
-      body: json.encode(_enteredData),
-    ); 
+    // await http.patch(
+    //   Uri.parse(
+    //       'https://firestore.googleapis.com/v1/projects/[groceryapp-3e624]/databases/(default)/documents/[grocery]/[$documentId]?currentDocument.exists=true&updateMask.fieldPaths=name&alt=json'),
+    //   body: json.encode(_enteredData),
+    // );
+    await DatabaseService()
+        .updateCollection(documentId, _enteredData)
+        .catchError((e) {
+      setState(() {
+        _loading = false;
+      });
+    });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
@@ -160,6 +184,7 @@ class _EditCardState extends State<EditCard> {
     );
 
     setState(() {
+      _loading = false;
       _img = null;
     });
   }
@@ -205,11 +230,14 @@ class _EditCardState extends State<EditCard> {
                                     height: dimensions.size.height * 0.15,
                                     fit: BoxFit.cover,
                                   )
-                                : Image.network(
-                                    _userImage,
-                                    height: dimensions.size.height * 0.15,
-                                    width: dimensions.size.width * 0.3,
-                                    fit: BoxFit.cover,
+                                : Hero(
+                                    tag: 'item',
+                                    child: Image.network(
+                                      _userImage,
+                                      height: dimensions.size.height * 0.15,
+                                      width: dimensions.size.width * 0.3,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                           ),
                         ),
@@ -243,7 +271,6 @@ class _EditCardState extends State<EditCard> {
                       ),
                       TextFormField(
                         initialValue: _itemPrice,
-                        maxLength: 5,
                         decoration: const InputDecoration(
                           label: Text('Price'),
                         ),
@@ -257,6 +284,9 @@ class _EditCardState extends State<EditCard> {
                           _itemPrice = val ?? '';
                         },
                         keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(
+                        height: 20,
                       ),
                       Counter(
                         color: GlobalColors.primaryColor,
@@ -275,19 +305,21 @@ class _EditCardState extends State<EditCard> {
                       const SizedBox(
                         height: 10,
                       ),
-                      ElevatedButton.icon(
-                        onPressed: _addProduct,
-                        icon: const Icon(Icons.add),
-                        label: const Text('Add Item'),
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
+                      _loading
+                          ? const CircularProgressIndicator.adaptive()
+                          : ElevatedButton.icon(
+                              onPressed: _addProduct,
+                              icon: const Icon(Icons.update),
+                              label: const Text('Update Item'),
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
