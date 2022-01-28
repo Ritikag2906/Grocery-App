@@ -28,6 +28,11 @@ class DatabaseService {
       debugPrint('Error Occurred: $error');
     });
   }
+  Future<void> updateCollection(String docId, Map<String, dynamic> dataMap) async {
+ final CollectionReference ref =
+        FirebaseFirestore.instance.collection('grocery');
+    await ref.doc(docId).update(dataMap);
+  }
   Future<void> deleteCollection(String docId) async {
  final CollectionReference ref =
         FirebaseFirestore.instance.collection('grocery');
