@@ -5,8 +5,10 @@ import 'package:grocery_app/utils/widgetConstants.dart';
 
 class CustomDialogueBox extends StatefulWidget {
   final String image, price, quantity;
+  final DateTime id;
   const CustomDialogueBox(
       {Key? key,
+      required this.id,
       required this.image,
       required this.price,
       required this.quantity})
@@ -45,9 +47,12 @@ class CustomDialogueBoxState extends State<CustomDialogueBox> {
         ),
         TextButton(
             onPressed: () {
-              Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => EditPage()))
-                  .then((value) => Navigator.pop(context));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EditPage(
+                            id: widget.id,
+                          ))).then((value) => Navigator.pop(context));
             },
             child: const Text(
               'Edit',

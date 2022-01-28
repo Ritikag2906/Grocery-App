@@ -108,6 +108,7 @@ class _ShopPageState extends State<ShopPage> {
                                                   //   .name
                                                   .toString()),
                                               content: CustomDialogueBox(
+                                                id: value[i].id,
                                                 image: value[i]
                                                     .imagePath
                                                     // groceryList[i]
