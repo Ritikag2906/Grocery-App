@@ -28,5 +28,10 @@ class DatabaseService {
       debugPrint('Error Occurred: $error');
     });
   }
+  Future<void> deleteCollection(String docId) async {
+ final CollectionReference ref =
+        FirebaseFirestore.instance.collection('grocery');
+    await ref.doc(docId).delete();
+  }
 }
 
