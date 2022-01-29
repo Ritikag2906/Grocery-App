@@ -51,7 +51,7 @@ class _ShopPageState extends State<ShopPage> {
           return watch(groceryListProvider).when(
             data: (value) => Padding(
               padding: const EdgeInsets.all(8.0),
-              child: value.isNotEmpty
+              child: !value.isNotEmpty
                   ? SmartRefresher(
                       controller: _refreshController,
                       enablePullDown: true,
@@ -160,14 +160,30 @@ class _ShopPageState extends State<ShopPage> {
                   : Center(
                       child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text('No Items')],
+                      children: [
+                        Icon(
+                          Icons.shopping_bag_outlined,
+                          size: 60,
+                          color: GlobalColors.secondaryColor.withOpacity(0.4),
+                        ),
+                        Text(
+                          'No Items',
+                          style: TextStyle(
+                              color:
+                                  GlobalColors.secondaryColor.withOpacity(0.5),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        )
+                      ],
                     )),
             ),
             loading: () => Center(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircularProgressIndicator(),
+                CircularProgressIndicator(
+                  color: GlobalColors.primaryColor,
+                ),
               ],
             )),
             error: (error, stackTrace) => Text('error: $error'),
