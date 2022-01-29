@@ -187,6 +187,7 @@ class _EditCardState extends State<EditCard> {
       _loading = false;
       _img = null;
     });
+    Navigator.of(context).pop();
   }
 
   final formKey = GlobalKey<FormState>();
