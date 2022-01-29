@@ -63,7 +63,14 @@ class _EditPageState extends State<EditPage> {
             .get(),
         builder: (_, snapshot) {
           return snapshot.connectionState == ConnectionState.waiting
-              ? const CircularProgressIndicator()
+              ? Center(
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const CircularProgressIndicator(
+                        color: GlobalColors.primaryColor),
+                  ],
+                ))
               : EditCard(snapshot
                   as AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>);
         },

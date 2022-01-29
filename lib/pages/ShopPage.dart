@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -51,7 +50,7 @@ class _ShopPageState extends State<ShopPage> {
           return watch(groceryListProvider).when(
             data: (value) => Padding(
               padding: const EdgeInsets.all(8.0),
-              child: !value.isNotEmpty
+              child: value.isNotEmpty
                   ? SmartRefresher(
                       controller: _refreshController,
                       enablePullDown: true,
